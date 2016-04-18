@@ -11,20 +11,30 @@
   <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <!-- Boostrap JS -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <!-- D3 -->
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <!-- Better Autocomplete -->
   <script src="/js/jquery.better-autocomplete.js"></script>
 </head>
 <body>
-  <form>
+  <form id="queryForm">
     <h2>Query</h2>
     <label for="query">Please enter a query</label><br />
     <input type="search" id="query" name="query"/>
     <h2>Country</h2>
-    <label for="query">Please enter a country</label><br />
+    <label for="country">Please enter a country</label><br />
     <input type="search" id="country" name="country"/>
+    <h2>Period</h2>
+    <label for="period">Please enter a period</label><br />
+    <input type="search" id="period" name="period"/>
+    <h2>Medium</h2>
+    <label for="medium">Please enter a medium</label><br />
+    <input type="search" id="medium" name="medium"/>
+    <h2>Year range</h2>
+    <label id="amount">1900 - 2016</label>
+    </div>
+    <div id="slider-range"></div>
     <button type="submit" id="cooper">Submit</button>
   </form>
   

@@ -88,3 +88,12 @@
   overflow: hidden;
   height: 1px;
 }
+
+#queryForm {
+  padding: 20px;
+}
+
+#slider-range {
+  width: 300px;
+  margin-bottom: 20px;
+}
