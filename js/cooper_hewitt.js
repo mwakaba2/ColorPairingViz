@@ -1,5 +1,7 @@
 var sliderRange = [1900, 2016];
-
+var colorPairs = [];
+var centerColor = '';
+var objectIds = [];
 var countries = [
     'France',
     'United States',
@@ -52,7 +54,7 @@ var medium = ['graphite on tracing paper', 'block-printed', 'graphite\nsupport: 
 
 period_dict = {'Rococo': 35417101, 'Hudson River School': 35417175, 'Neoclassical': 35417089,
                 'American Modern': 35435409, 'early Modern': 35417049, 'Art Deco': 35417235, 
-                'Baroque': 35417081, 'postwar': 35435429, ' Civil War': 35417141, 
+                'postwar': 35435429, ' Civil War': 35417141, 
                 'Northern Renaissance': 35417075, 'Mid-20th century': 35417329, 
                 'Late Nineteenth Century': 35417087, '  Late Twentieth Century': 35435423,
                 'Early 20th century': 35417121}
@@ -112,7 +114,7 @@ $(document).ready(function() {
 
         var objectNum = 100;
         $.ajax({
-            url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token=f6fc4d52b4c2499d9929056b1946ccc7'+queryString+'&page=1&per_page='+objectNum,
+            url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token=f6fc4d52b4c2499d9929056b1946ccc7'+queryString+'&has_images=true&page=1&per_page='+objectNum,
             success: function (response) {
 
                 console.log(response);
@@ -131,18 +133,106 @@ $(document).ready(function() {
                         var imgurl = response.objects[i].images[0].sq.url;
                         var link = response.objects[i].url;
 
-                        console.log(htmlString);
+                        var id = response.objects[i].id;
+                        objectIds.push(id);
                         htmlString = '<a href="'+link+'"><img src="'+imgurl+'"></a>';
-                        console.log(htmlString);
                         $('#results').append( htmlString );
                     }
                 }
+                getColors(objectIds);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $( '#results' ).empty();
                 $('#results').text('No results!');
             }
         });
+
     });
 
+    function getColors(idList) {
+        for(var i = 0; i < idList.length; i++){
+            var currId = idList[i];
+            $.ajax({ 
+                url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token=f6fc4d52b4c2499d9929056b1946ccc7&id='+currId,
+                async: false,
+                success: function (response) {
+                    colors = response.colors;
+                    var colorsList = [];
+                    for(var i = 0; i < colors.length; i++){
+                        color = colors[i].closest_css3;
+                        colorsList.push(color);
+                        colorsList.pairs(function(pair){
+                            colorPairs.push(pair);
+                        });
+                    }
+                }
+            });
+        }
+        calculate(colorPairs, centerColor);
+    }
+
+    function calculate(list, value){
+        var colorDictionary = {};
+        if (value.length == 0){
+            value = list[0][0];
+        }
+        for(var i = 0; i < list.length; i++){
+            var idx = list[i].indexOf(value);
+            if(idx > -1){
+                if(idx == 0){
+                    var color = list[i][1];
+                }else{
+                    var color = list[i][0];
+                }
+                if(color in colorDictionary){
+                    colorDictionary[color] += 1;
+                } else {
+                    colorDictionary[color] = 1;
+                }
+            }
+        }
+        normalize(colorDictionary);
+        colorPairingList = getSortedKeys(colorDictionary);
+        console.log(colorDictionary);
+        console.log(colorPairingList);
+        displayColors(colorPairingList, colorDictionary);
+    }
+
+    function getSortedKeys(obj) {
+        var keys = []; for(var key in obj) keys.push(key);
+        return keys.sort(function(a,b){return obj[b]-obj[a]});
+    }
+
+    Array.prototype.pairs = function (func) {
+        var pairs = [];
+        for (var i = 0; i < this.length - 1; i++) {
+            for (var j = i; j < this.length - 1; j++) {
+                func([this[i], this[j+1]]);
+            }
+        }
+    }
+
+    function normalize(obj){
+        var sum = getSum(obj);
+        for(key in obj){
+            obj[key] /= sum;
+        }
+    }
+
+    function getSum(obj){
+        var totalSum = 0;
+        for(key in obj){
+            totalSum += obj[key];
+        }
+        return totalSum;
+    }
+
+    function displayColors(list, obj){
+        var constant = 10000;
+        for(var i = 0; i < list.length; i++){
+            var size = Math.floor(obj[list[i]]*100);
+            htmlString = '<div class="square" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
+            $('#colorList').append( htmlString );
+        }
+    }
 });

@@ -97,3 +97,11 @@
   width: 300px;
   margin-bottom: 20px;
 }
+
+.square {
+  display: inline-block;
+  margin: 20px;
+  background-color: #fff;
+  width: 50px;
+  border-radius: 100%;
+}
