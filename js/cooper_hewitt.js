@@ -228,9 +228,9 @@ $(document).ready(function() {
     }
 
     function displayColors(list, obj){
-        var constant = 10000;
+        var constant = 1000;
         for(var i = 0; i < list.length; i++){
-            var size = Math.floor(obj[list[i]]*100);
+            var size = Math.floor(obj[list[i]]*constant);
             htmlString = '<div class="square" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
         }
