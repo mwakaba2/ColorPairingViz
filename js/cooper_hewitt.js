@@ -1,3 +1,4 @@
+var accessToken = '9447f04a723ce5cc655fccfa90729603';
 var sliderRange = [1900, 2016];
 var colorPairs = [];
 var centerColor = '';
@@ -86,10 +87,14 @@ $(document).ready(function() {
     $('#period').betterAutocomplete('init', periods, {}, {});
     $('#medium').betterAutocomplete('init', medium, {}, {});
 
-    $("#cooper").click(function(event){
-        event.preventDefault();
+    $(document).delegate('.square', 'click', function(){
+        var selectedColor = getHex($(this).css("background-color"));
+        calculate(colorPairs, selectedColor, 15);
+    });
 
-        var accessToken = 'a31ceab19d68d86b12b3c3193f5e123b';
+    $("#cooper").click(function(event){
+        $('#results').before('<div id="loading">Loading...</div>');
+        event.preventDefault();
         var queryString = '';
         var yearRange = '&year_start='+sliderRange[0]+'-'+sliderRange[1];
         queryString += yearRange;
@@ -111,12 +116,11 @@ $(document).ready(function() {
             queryString += medium;
         }
 
-
-        var objectNum = 100;
+        var objectNum = 150;
         $.ajax({
-            url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token=f6fc4d52b4c2499d9929056b1946ccc7'+queryString+'&has_images=true&page=1&per_page='+objectNum,
+            url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token='+accessToken+queryString+'&has_images=true&page=1&per_page='+objectNum,
             success: function (response) {
-
+                
                 console.log(response);
                 var num = response.objects.length;
                 var htmlString = "";
@@ -124,6 +128,7 @@ $(document).ready(function() {
                 $( '#results' ).empty();
 
                 if(num == 0){
+                    $('#loading').remove();
                     $( '#results' ).empty();
                     $('#results').text('No results!');
                 }
@@ -142,6 +147,7 @@ $(document).ready(function() {
                 getColors(objectIds);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#loading').remove();
                 $( '#results' ).empty();
                 $('#results').text('No results!');
             }
@@ -150,11 +156,11 @@ $(document).ready(function() {
     });
 
     function getColors(idList) {
+        var colorNum = 15;
         for(var i = 0; i < idList.length; i++){
             var currId = idList[i];
             $.ajax({ 
-                url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token=f6fc4d52b4c2499d9929056b1946ccc7&id='+currId,
-                async: false,
+                url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token='+accessToken+'&id='+currId,
                 success: function (response) {
                     colors = response.colors;
                     var colorsList = [];
@@ -165,15 +171,17 @@ $(document).ready(function() {
                             colorPairs.push(pair);
                         });
                     }
+                },
+                complete: function () {
+                    calculate(colorPairs, centerColor, colorNum);
                 }
             });
         }
-        calculate(colorPairs, centerColor);
     }
 
-    function calculate(list, value){
+    function calculate(list, value, colorNum){
         var colorDictionary = {};
-        if (value.length == 0){
+        if (list.length > 0 && value.length == 0){
             value = list[0][0];
         }
         for(var i = 0; i < list.length; i++){
@@ -192,10 +200,9 @@ $(document).ready(function() {
             }
         }
         normalize(colorDictionary);
-        colorPairingList = getSortedKeys(colorDictionary);
-        console.log(colorDictionary);
+        var colorPairingList = getSortedKeys(colorDictionary).slice(0, colorNum);
         console.log(colorPairingList);
-        displayColors(colorPairingList, colorDictionary);
+        displayColors(value, colorPairingList, colorDictionary);
     }
 
     function getSortedKeys(obj) {
@@ -227,12 +234,35 @@ $(document).ready(function() {
         return totalSum;
     }
 
-    function displayColors(list, obj){
+    function displayColors(selectedColor, list, obj){
+        $('#loading').remove();
         var constant = 1000;
+        if($('#selected').length){
+            $('#selected').css("background-color", selectedColor);
+        } else {
+            htmlString = 'Selected Color: <div id="selected" class="square" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
+            $('#colorList').before( htmlString );
+        }
+        
+        if($('#colorList').length){
+            $('#colorList').empty();
+        }
+
         for(var i = 0; i < list.length; i++){
             var size = Math.floor(obj[list[i]]*constant);
             htmlString = '<div class="square" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
         }
+    }
+
+    function getHex(colorval) {
+        var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        delete(parts[0]);
+        for (var i = 1; i <= 3; ++i) {
+            parts[i] = parseInt(parts[i]).toString(16);
+            if (parts[i].length == 1) parts[i] = '0' + parts[i];
+        }
+        color = '#' + parts.join('');
+        return color;
     }
 });
