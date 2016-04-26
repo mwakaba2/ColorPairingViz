@@ -1,7 +1,8 @@
-var accessToken = '9447f04a723ce5cc655fccfa90729603';
+var accessToken = '0945489b1620566cbe67858956ec9d9c';
 var sliderRange = [1900, 2016];
 var colorPairs = [];
 var centerColor = '';
+var artObjects = {};
 var objectIds = [];
 var countries = [
     'France',
@@ -122,6 +123,7 @@ $(document).ready(function() {
             success: function (response) {
                 
                 console.log(response);
+                artObjects = response.objects;
                 var num = response.objects.length;
                 var htmlString = "";
 
@@ -140,7 +142,7 @@ $(document).ready(function() {
 
                         var id = response.objects[i].id;
                         objectIds.push(id);
-                        htmlString = '<a href="'+link+'"><img src="'+imgurl+'"></a>';
+                        htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
                         $('#results').append( htmlString );
                     }
                 }
@@ -156,14 +158,15 @@ $(document).ready(function() {
     });
 
     function getColors(idList) {
-        var colorNum = 15;
+        var colorNum = 100;
+        var currId = '';
         for(var i = 0; i < idList.length; i++){
-            var currId = idList[i];
+            currId = idList[i];
+            var colorsList = [];
             $.ajax({ 
                 url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token='+accessToken+'&id='+currId,
                 success: function (response) {
                     colors = response.colors;
-                    var colorsList = [];
                     for(var i = 0; i < colors.length; i++){
                         color = colors[i].closest_css3;
                         colorsList.push(color);
@@ -171,6 +174,7 @@ $(document).ready(function() {
                             colorPairs.push(pair);
                         });
                     }
+                    
                 },
                 complete: function () {
                     calculate(colorPairs, centerColor, colorNum);
@@ -200,8 +204,8 @@ $(document).ready(function() {
             }
         }
         normalize(colorDictionary);
-        var colorPairingList = getSortedKeys(colorDictionary).slice(0, colorNum);
-        console.log(colorPairingList);
+        var colorPairingList = getSortedKeys(colorDictionary)
+        // .slice(0, colorNum);
         displayColors(value, colorPairingList, colorDictionary);
     }
 
@@ -249,10 +253,12 @@ $(document).ready(function() {
         }
 
         for(var i = 0; i < list.length; i++){
-            var size = Math.floor(obj[list[i]]*constant);
+            var size =  100;
+            //Math.floor(obj[list[i]]*constant);
             htmlString = '<div class="square" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
         }
+        
     }
 
     function getHex(colorval) {
