@@ -88,7 +88,7 @@ $(document).ready(function() {
     $('#period').betterAutocomplete('init', periods, {}, {});
     $('#medium').betterAutocomplete('init', medium, {}, {});
 
-    $(document).delegate('.square', 'click', function(){
+    $(document).delegate('.circle', 'click', function(){
         var selectedColor = getHex($(this).css("background-color"));
         calculate(colorPairs, selectedColor, 15);
     });
@@ -244,7 +244,7 @@ $(document).ready(function() {
         if($('#selected').length){
             $('#selected').css("background-color", selectedColor);
         } else {
-            htmlString = 'Selected Color: <div id="selected" class="square" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
+            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
             $('#colorList').before( htmlString );
         }
         
@@ -255,7 +255,7 @@ $(document).ready(function() {
         for(var i = 0; i < list.length; i++){
             var size =  100;
             //Math.floor(obj[list[i]]*constant);
-            htmlString = '<div class="square" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
+            htmlString = '<div class="circle" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
         }
         
