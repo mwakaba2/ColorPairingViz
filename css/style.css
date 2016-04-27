@@ -1,3 +1,26 @@
+body {
+  background-color:#F2F2F2;
+}
+
+h2  {
+  font-size:14px;
+  font-family:Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+label {
+  font-size:14px;
+  font-family:Helvetica, sans-serif;
+  color:#666;
+  font-weight:400;
+}
+
+input {
+  border:1px solid #999;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
 
 img {
   width: 100px;
@@ -114,58 +137,50 @@ img {
 }
 
 /*Qing made changes below */
-#top{
+#top {
 	background-color:#000;
 	height:50px;
 	width:100%
 	position:absolute;
 	top:0;
 	left:0;
-	}
-#topTitle{
+}
+
+#topTitle {
 	color:#FF0;
 	font-family:"open sans", Arial, Helvetica, sans-serif;
 	font-size:14px;
 	position:absolute;
 	left:20px;
-	top:15px;}
-body{
-	background-color:#F2F2F2;
-	}
-h2{
-	font-size:14px;
-    font-family:Helvetica, sans-serif;
-	font-weight: bold;
-	}
-label{
-	font-size:14px;
-    font-family:Helvetica, sans-serif;
-	color:#666;
-	font-weight:400;
-	}
-input{
-	border:1px solid #999;
-	-webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+	top:15px;
 }
-#cooper{
-    padding:5px 15px; 
-	color:#fff;
-	font-weight:700;
-    background-color:#999; 
-    border:none;
-    cursor:pointer;
-    -webkit-border-radius:10px;
-	-moz-border-radius: 10px;
-    border-radius:10px; 
+
+#cooper {
+  padding:5px 15px; 
+  color:#fff;
+  font-weight:700;
+  background-color:#999; 
+  border:none;
+  cursor:pointer;
+  -webkit-border-radius:10px;
+  -moz-border-radius: 10px;
+  border-radius:10px; 
 }
+
 #formFrame {
 	width:30%;
 	float:left;
 	height:100%;
-	}
+}
+
 #viz {
 	width:70%;
 	min-height:500px;
-	margin-left:20px;}
+	margin-left:20px;
+}
+
+#results {
+  width: 60%;
+  margin: 0 auto;
+  padding: 20px;
+}
