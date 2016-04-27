@@ -1,5 +1,6 @@
-var accessToken = '0945489b1620566cbe67858956ec9d9c';
+var accessToken = 'b6164ca5516e06395cae70033875c98f';
 var sliderRange = [1900, 2016];
+var ListofColorLists = [];
 var colorPairs = [];
 var centerColor = '';
 var artObjects = {};
@@ -137,13 +138,13 @@ $(document).ready(function() {
 
                 for(var i=0; i<num; i++){
                     if(response.objects[i].images.length>0){
-                        var imgurl = response.objects[i].images[0].sq.url;
-                        var link = response.objects[i].url;
+                        // var imgurl = response.objects[i].images[0].sq.url;
+                        // var link = response.objects[i].url;
 
                         var id = response.objects[i].id;
                         objectIds.push(id);
-                        htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
-                        $('#results').append( htmlString );
+                        // htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
+                        // $('#results').append( htmlString );
                     }
                 }
                 getColors(objectIds);
@@ -158,14 +159,15 @@ $(document).ready(function() {
     });
 
     function getColors(idList) {
+        ListofColorLists = [];
         var colorNum = 100;
-        var currId = '';
         for(var i = 0; i < idList.length; i++){
-            currId = idList[i];
+            var currId = idList[i];
             var colorsList = [];
             $.ajax({ 
                 url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token='+accessToken+'&id='+currId,
                 success: function (response) {
+                    colorsList = [];
                     colors = response.colors;
                     for(var i = 0; i < colors.length; i++){
                         color = colors[i].closest_css3;
@@ -174,7 +176,7 @@ $(document).ready(function() {
                             colorPairs.push(pair);
                         });
                     }
-                    
+                    ListofColorLists.push(colorsList);
                 },
                 complete: function () {
                     calculate(colorPairs, centerColor, colorNum);
@@ -186,7 +188,7 @@ $(document).ready(function() {
     function calculate(list, value, colorNum){
         var colorDictionary = {};
         if (list.length > 0 && value.length == 0){
-            value = list[0][0];
+            value = ListofColorLists[0][0];
         }
         for(var i = 0; i < list.length; i++){
             var idx = list[i].indexOf(value);
@@ -241,6 +243,7 @@ $(document).ready(function() {
     function displayColors(selectedColor, list, obj){
         $('#loading').remove();
         var constant = 1000;
+        var selectedArtworks = [];
         if($('#selected').length){
             $('#selected').css("background-color", selectedColor);
         } else {
@@ -250,6 +253,7 @@ $(document).ready(function() {
         
         if($('#colorList').length){
             $('#colorList').empty();
+            $('#results').empty();
         }
 
         for(var i = 0; i < list.length; i++){
@@ -257,6 +261,25 @@ $(document).ready(function() {
             //Math.floor(obj[list[i]]*constant);
             htmlString = '<div class="circle" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
+        }
+
+        for(var i = 0; i < ListofColorLists.length; i++){
+            var colorList = ListofColorLists[i];
+            if(colorList.indexOf(selectedColor) > -1){
+                selectedArtworks.push(artObjects[i]);
+            }
+        }
+
+        for(var i = 0; i < selectedArtworks.length; i++){
+            if(selectedArtworks[i].images.length>0){
+                var imgurl = selectedArtworks[i].images[0].sq.url;
+                var link = selectedArtworks[i].url;
+
+                var id = selectedArtworks[i].id;
+                objectIds.push(id);
+                htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
+                $('#results').append( htmlString );
+            }
         }
         
     }
