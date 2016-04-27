@@ -266,7 +266,12 @@ $(document).ready(function() {
         for(var i = 0; i < ListofColorLists.length; i++){
             var colorList = ListofColorLists[i];
             if(colorList.indexOf(selectedColor) > -1){
-                selectedArtworks.push(artObjects[i]);
+                var currId = objectIds[i];
+                for(j in artObjects){
+                    if(artObjects[j].id == currId){
+                        selectedArtworks.push(artObjects[j]);
+                    }
+                }
             }
         }
 
