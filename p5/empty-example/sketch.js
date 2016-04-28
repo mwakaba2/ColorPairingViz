@@ -46,6 +46,13 @@ var dots = [
   }
 ]
 
+for (var i = 0; i < 110; i++) {
+  dots.push({
+    "hsl": [Math.random() * 360, Math.random() * 100, Math.random() * 100], "score": Math.random() * 10 * Math.random() * 10
+  });
+}
+
+
 function hueMod(h) {
   return h % 360;
 }
@@ -62,7 +69,7 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(240);
 
   colorMode(HSL);
   // Translate the origin point to the center of the screen
@@ -89,8 +96,8 @@ function draw() {
 
     // Draw the ellipse at the cartesian coordinate
     ellipseMode(CENTER);
-    noStroke();
-    fill(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]));
+    stroke(255);
+    fill(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]), 0.8);
     ellipse(x, y, dot.score + 5, dot.score + 5);
     // fill(0, 0, 0, 0);
     // stroke(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]), 0.5);
