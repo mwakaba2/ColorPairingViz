@@ -17,9 +17,11 @@ var nextcore;
 // for clicking
 var clickable;
 
-// border width of dots
-var border;
-var borderHover;
+// dot border
+var borderWeight;
+var borderHoverWeight;
+var borderColor;
+var borderHoverColor;
 
 // minimum size for dots
 var dotMinSize;
@@ -29,11 +31,10 @@ var dotSize;
 
 // alpha for dots
 var dotAlpha;
+var dotAlphaHover;
 
 // how fast dots move
 var rotateVel;
-
-
 
 // array of objects
 // {
@@ -60,15 +61,18 @@ function setup() {
 
   rotate = 0;
   r = 0;
-  core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
+
   nextcore = [0, 0, 0];
   clickable = false;
-  border = 1;
-  borderHover = 5;
+  borderWeight = 1;
+  borderHoverWeight = 5;
   dotMinSize = 10;
   dotAlpha = 0.8;
+  dotAlphaHover = 1;
   rotateVel = 0.001;
   dotSize = 0.0045;
+  borderColor = 255;
+  borderHoverColor = 0;
 
   // Initialize all values
   // r = height * 0.45;
@@ -77,6 +81,7 @@ function setup() {
 
 function draw() {
   clickable = false;
+  core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
   background(240);
 
   colorMode(HSL);
@@ -105,18 +110,20 @@ function draw() {
     var y = r * sin(theta - rotate);
 
     var dotRadius = dot.score + dotMinSize;
+    var dotAlphaRender = dotAlphaHover;
 
     // Draw the ellipse at the cartesian coordinate
     ellipseMode(CENTER);
-    strokeWeight(1)
-    stroke(255);
+    strokeWeight(borderWeight)
+    stroke(borderColor);
     if (dist(mouseX - (width / 2), mouseY - (width / 2), x, y) < dotRadius / 2 ) {
       nextcore = dot.hsl;
-      strokeWeight(5);
-      stroke(0);
+      strokeWeight(borderHoverWeight);
+      stroke(borderHoverColor);
       clickable = true;
+      dotAlphaRender = 1;
     }
-    fill(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]), dotAlpha);
+    fill(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]), dotAlphaRender);
     ellipse(x, y, dotRadius, dotRadius);
 
 
