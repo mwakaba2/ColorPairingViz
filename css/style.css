@@ -168,6 +168,7 @@ img {
 }
 
 #formFrame {
+  margin-top: 60px;
 	width:30%;
 	float:left;
 	height:100%;

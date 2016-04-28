@@ -247,7 +247,7 @@ $(document).ready(function() {
         if($('#selected').length){
             $('#selected').css("background-color", selectedColor);
         } else {
-            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
+            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto; margin-top: 60px;"></div><br />';
             $('#colorList').before( htmlString );
         }
         
