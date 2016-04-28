@@ -66,7 +66,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         "Art Deco", "Baroque", "postwar", " Civil War", "Northern Renaissance", "Mid-20th century",
          "Late Nineteenth Century", "  Late Twentieth Century", "Early 20th century"]
 
-$(document).ready(function() {
+//$(document).ready(function() {
     /* year slider */
     $( "#slider-range" ).slider({
         range: true,
@@ -209,6 +209,7 @@ $(document).ready(function() {
         var colorPairingList = getSortedKeys(colorDictionary)
         // .slice(0, colorNum);
         displayColors(value, colorPairingList, colorDictionary);
+        console.log(dots);
     }
 
     function getSortedKeys(obj) {
@@ -226,9 +227,18 @@ $(document).ready(function() {
     }
 
     function normalize(obj){
-        var sum = getSum(obj);
+        //var sum = getSum(obj);
+
+        var max = 0;
+        for (key in obj) {
+            if (obj[key] > max) {
+                max = obj[key];
+            }
+        }
+
         for(key in obj){
-            obj[key] /= sum;
+            //obj[key] /= sum;
+            obj[key] /= max;
         }
     }
 
@@ -240,6 +250,43 @@ $(document).ready(function() {
         return totalSum;
     }
 
+    // converts a rgb hex string to hsl array.
+    function rgb2hsl(hex) {
+        var temp = hex.replace(/^#/, '');
+        var r = parseInt(temp.substring(0, 2), 16) / 255;
+        var g = parseInt(temp.substring(2, 4), 16) / 255;
+        var b = parseInt(temp.substring(4, 6), 16) / 255;
+
+        var cmax = max(r, g, b);
+        var cmin = min(r, g, b);
+        var delta = cmax - cmin;
+        var l = (cmax + cmin) / 2;
+        var h = 0;
+
+        if (delta === 0) {
+            h = 0
+        } else if (cmax === r) {
+            h = 60 * (((g - b) / delta) % 6);
+        } else if (cmax === g) {
+            h = 60 * ((b - r) / delta + 2);
+        } else if (cmax === b) {
+            h = 60 * ((r - g) / delta + 4);
+        }
+
+        var s = 0;
+        if (delta === 0) {
+            s = 0;
+        } else {
+            s = delta / (1 - Math.abs(2 * l  - 1));
+        }
+
+        /*
+        console.log([r * 255, g * 255, b * 255]);
+        console.log([h, Math.round(s * 100) / 100, Math.round(l * 100) / 100]);
+        */
+        return [Math.round(h * 100) / 100, Math.round(s * 10000) / 100, Math.round(l * 10000) / 100];
+    }
+
     function displayColors(selectedColor, list, obj){
         $('#loading').remove();
         var constant = 1000;
@@ -247,8 +294,8 @@ $(document).ready(function() {
         if($('#selected').length){
             $('#selected').css("background-color", selectedColor);
         } else {
-            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
-            $('#colorList').before( htmlString );
+            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto; margin-top: 60px;"></div><br />';
+            //$('#colorList').before( htmlString );
         }
         
         if($('#colorList').length){
@@ -256,11 +303,16 @@ $(document).ready(function() {
             $('#results').empty();
         }
 
+        dots = [{"hsl": rgb2hsl(selectedColor), "score": -100}];
+
         for(var i = 0; i < list.length; i++){
             var size =  100;
             //Math.floor(obj[list[i]]*constant);
             htmlString = '<div class="circle" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
+
+            // update dots. hsl and score normalized to 0-100
+            dots.push({"hsl": rgb2hsl(list[i]), "score": obj[list[i]] * 100, "hex": list[i]});
         }
 
         for(var i = 0; i < ListofColorLists.length; i++){
@@ -299,4 +351,4 @@ $(document).ready(function() {
         color = '#' + parts.join('');
         return color;
     }
-});
+//});
