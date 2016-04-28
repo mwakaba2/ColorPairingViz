@@ -141,18 +141,23 @@ img {
 	background-color:#000;
 	height:50px;
 	width:100%;
+  /*
 	position:absolute;
 	top:0;
 	left:0;
+	*/
 }
 
 #topTitle {
 	color:#FF0;
 	font-family:"open sans", Arial, Helvetica, sans-serif;
 	font-size:14px;
+  padding: 20px;
+  /*
 	position:absolute;
 	left:20px;
 	top:15px;
+	*/
 }
 
 #cooper {
@@ -168,14 +173,15 @@ img {
 }
 
 #formFrame {
-  margin-top: 60px;
+  margin-top: 10px;
 	width:30%;
 	float:left;
 	height:100%;
 }
 
 #viz {
-	width:70%;
+    float: right;
+	width:65%;
 	min-height:500px;
 	margin-left:20px;
 }
@@ -184,4 +190,8 @@ img {
   width: 60%;
   margin: 0 auto;
   padding: 20px;
+}
+
+#colorList {
+  display: none;
 }

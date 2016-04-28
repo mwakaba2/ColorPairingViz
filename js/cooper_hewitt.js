@@ -66,7 +66,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         "Art Deco", "Baroque", "postwar", " Civil War", "Northern Renaissance", "Mid-20th century",
          "Late Nineteenth Century", "  Late Twentieth Century", "Early 20th century"]
 
-$(document).ready(function() {
+//$(document).ready(function() {
     /* year slider */
     $( "#slider-range" ).slider({
         range: true,
@@ -209,10 +209,7 @@ $(document).ready(function() {
         var colorPairingList = getSortedKeys(colorDictionary)
         // .slice(0, colorNum);
         displayColors(value, colorPairingList, colorDictionary);
-
-        // display dots array for testing and tell p5 to redraw.
         console.log(dots);
-        redraw();
     }
 
     function getSortedKeys(obj) {
@@ -230,9 +227,18 @@ $(document).ready(function() {
     }
 
     function normalize(obj){
-        var sum = getSum(obj);
+        //var sum = getSum(obj);
+
+        var max = 0;
+        for (key in obj) {
+            if (obj[key] > max) {
+                max = obj[key];
+            }
+        }
+
         for(key in obj){
-            obj[key] /= sum;
+            //obj[key] /= sum;
+            obj[key] /= max;
         }
     }
 
@@ -278,7 +284,7 @@ $(document).ready(function() {
         console.log([r * 255, g * 255, b * 255]);
         console.log([h, Math.round(s * 100) / 100, Math.round(l * 100) / 100]);
         */
-        return [Math.round(h * 100) / 100, Math.round(s * 100) / 100, Math.round(l * 100) / 100];
+        return [Math.round(h * 100) / 100, Math.round(s * 10000) / 100, Math.round(l * 10000) / 100];
     }
 
     function displayColors(selectedColor, list, obj){
@@ -289,7 +295,7 @@ $(document).ready(function() {
             $('#selected').css("background-color", selectedColor);
         } else {
             htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto; margin-top: 60px;"></div><br />';
-            $('#colorList').before( htmlString );
+            //$('#colorList').before( htmlString );
         }
         
         if($('#colorList').length){
@@ -297,7 +303,7 @@ $(document).ready(function() {
             $('#results').empty();
         }
 
-        dots = [];
+        dots = [{"hsl": rgb2hsl(selectedColor), "score": -100}];
 
         for(var i = 0; i < list.length; i++){
             var size =  100;
@@ -306,7 +312,7 @@ $(document).ready(function() {
             $('#colorList').append( htmlString );
 
             // update dots. hsl and score normalized to 0-100
-            dots.push({"hsl": rgb2hsl(list[i]), "score": obj[list[i]] * 100});
+            dots.push({"hsl": rgb2hsl(list[i]), "score": obj[list[i]] * 100, "hex": list[i]});
         }
 
         for(var i = 0; i < ListofColorLists.length; i++){
@@ -345,4 +351,4 @@ $(document).ready(function() {
         color = '#' + parts.join('');
         return color;
     }
-});
+//});
