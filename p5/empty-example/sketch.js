@@ -17,63 +17,58 @@ var nextcore;
 // for clicking
 var clickable;
 
-// hsl [0 to 359 (though you can go higher because function hueMod()), 0 to 100, 0 to 100]
-// score 0 to 100
+// border width of dots
+var border;
+var borderHover;
 
-var dots = [
-  {
-    "hsl": [0, 50, 50],
-    "score": 36
-  },
-  {
-    "hsl": [60, 50, 50],
-    "score": 65
-  },
-  {
-    "hsl": [120, 50, 50],
-    "score": 46
-  },
-  {
-    "hsl": [180, 50, 50],
-    "score": 26
-  },
-  {
-    "hsl": [240, 50, 50],
-    "score": 69
-  },
-  {
-    "hsl": [300, 50, 50],
-    "score": 25
-  },
-  {
-    "hsl": [238, 100, 50],
-    "score": 0
-  },
-  {
-    "hsl": [14, 100, 50],
-    "score": 100
-  }
-]
+// minimum size for dots
+var dotMinSize;
 
-for (var i = 0; i < 110; i++) {
+// size multiplier of dot
+var dotSize;
+
+// alpha for dots
+var dotAlpha;
+
+// how fast dots move
+var rotateVel;
+
+
+
+// array of objects
+// {
+// "hsl": [0 to 359 (though you can go higher because function hueMod()), 0 to 100, 0 to 100]
+// "score": 0 to 100
+// }
+var dots = [];
+
+// generates a lot of dots
+for (var i = 0; i < 117; i++) {
   dots.push({
     "hsl": [Math.random() * 360, Math.random() * 100, Math.random() * 100], "score": Math.random() * 10 * Math.random() * 10
   });
 }
 
-
+// returns number 0 to 359 for hue
 function hueMod(h) {
   return h % 360;
 }
 
 function setup() {
   createCanvas(1000, 1000);
+  frameRate(24);
 
   rotate = 0;
-  frameRate(24);
-  core = [0, 0, 0];
-  notcore = [0, 0, 0];
+  r = 0;
+  core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
+  nextcore = [0, 0, 0];
   clickable = false;
+  border = 1;
+  borderHover = 5;
+  dotMinSize = 10;
+  dotAlpha = 0.8;
+  rotateVel = 0.001;
+  dotSize = 0.0045;
 
   // Initialize all values
   // r = height * 0.45;
@@ -98,29 +93,31 @@ function draw() {
   fill(core[0], core[1], core[2], 1);
   ellipse(0, 0, r * .5, r * .5);
 
-  rotate = rotate + 0.001;
+  rotate = rotate + rotateVel;
 
 
   for (dot of dots) {
 
     // Convert polar to cartesian
     theta = hueMod(dot.hsl[0]) / 360 * TAU;
-    r = min(height, width) * .0045 * (100 - dot.score) + min(height, width) * 0.1;
+    r = min(height, width) * dotSize * (100 - dot.score) + min(height, width) * 0.1;
     var x = r * cos(theta - rotate);
     var y = r * sin(theta - rotate);
+
+    var dotRadius = dot.score + dotMinSize;
 
     // Draw the ellipse at the cartesian coordinate
     ellipseMode(CENTER);
     strokeWeight(1)
     stroke(255);
-    if (dist(mouseX - (width / 2), mouseY - (width / 2), x, y) < (dot.score + 5) / 2 ) {
+    if (dist(mouseX - (width / 2), mouseY - (width / 2), x, y) < dotRadius / 2 ) {
       nextcore = dot.hsl;
       strokeWeight(5);
       stroke(0);
       clickable = true;
     }
-    fill(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]), 0.8);
-    ellipse(x, y, dot.score + 5, dot.score + 5);
+    fill(hueMod(dot.hsl[0]), hueMod(dot.hsl[1]), hueMod(dot.hsl[2]), dotAlpha);
+    ellipse(x, y, dotRadius, dotRadius);
 
 
     // if we want to draw each orbit
@@ -137,5 +134,8 @@ function draw() {
 function mousePressed() {
   if (clickable) {
     core = nextcore;
+
+    // @TODO: SET NEW COLOR IN MARIKO'S CODE
+
   }
 }
