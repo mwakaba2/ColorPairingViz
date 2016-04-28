@@ -23,8 +23,9 @@ var borderHoverWeight;
 var borderColor;
 var borderHoverColor;
 
-// minimum size for dots
+// size for dots
 var dotMinSize;
+var dotMaxSize;
 
 // size multiplier of dot
 var dotSize;
@@ -46,7 +47,7 @@ var dots = [];
 // generates a lot of dots
 for (var i = 0; i < 117; i++) {
   dots.push({
-    "hsl": [Math.random() * 360, Math.random() * 100, Math.random() * 100], "score": Math.random() * 10 * Math.random() * 10
+    "hsl": [Math.random() * 360, Math.random() * 100, Math.random() * 100], "score": Math.random() * Math.min(window.innerHeight, window.innerWidth) * 0.1 * Math.random()
   });
 }
 
@@ -56,7 +57,7 @@ function hueMod(h) {
 }
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(window.innerWidth, window.innerHeight);
   frameRate(24);
 
   rotate = 0;
@@ -67,12 +68,15 @@ function setup() {
   borderWeight = 1;
   borderHoverWeight = 5;
   dotMinSize = 10;
+  dotMaxSize = min(window.innerHeight, window.innerWidth) * 0.1;
   dotAlpha = 0.8;
   dotAlphaHover = 1;
   rotateVel = 0.001;
-  dotSize = 0.0045;
+  dotSize = (2468 - min(window.innerHeight, window.innerWidth)) * 0.000005;
   borderColor = 255;
   borderHoverColor = 0;
+
+  core = dots[0].hsl
 
   // Initialize all values
   // r = height * 0.45;
@@ -81,7 +85,7 @@ function setup() {
 
 function draw() {
   clickable = false;
-  core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
+  // core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
   background(240);
 
   colorMode(HSL);
@@ -105,9 +109,12 @@ function draw() {
 
     // Convert polar to cartesian
     theta = hueMod(dot.hsl[0]) / 360 * TAU;
-    r = min(height, width) * dotSize * (100 - dot.score) + min(height, width) * 0.1;
-    var x = r * cos(theta - rotate);
-    var y = r * sin(theta - rotate);
+    r = min(height, width) * dotSize * (dotMaxSize - dot.score) + min(height, width) * 0.01;
+    // var x = r * cos(theta - rotate);
+    // var y = r * sin(theta - rotate);
+    var x = r * cos(theta - rotate * (dot.hsl[0] + 2) * 0.2);
+    var y = r * sin(theta - rotate * (dot.hsl[0] + 2) * 0.2);
+
 
     var dotRadius = dot.score + dotMinSize;
     var dotAlphaRender = dotAlphaHover;
