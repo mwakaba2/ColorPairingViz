@@ -1,7 +1,9 @@
-var accessToken = '9447f04a723ce5cc655fccfa90729603';
+var accessToken = 'b6164ca5516e06395cae70033875c98f';
 var sliderRange = [1900, 2016];
+var ListofColorLists = [];
 var colorPairs = [];
 var centerColor = '';
+var artObjects = {};
 var objectIds = [];
 var countries = [
     'France',
@@ -87,7 +89,7 @@ $(document).ready(function() {
     $('#period').betterAutocomplete('init', periods, {}, {});
     $('#medium').betterAutocomplete('init', medium, {}, {});
 
-    $(document).delegate('.square', 'click', function(){
+    $(document).delegate('.circle', 'click', function(){
         var selectedColor = getHex($(this).css("background-color"));
         calculate(colorPairs, selectedColor, 15);
     });
@@ -122,6 +124,7 @@ $(document).ready(function() {
             success: function (response) {
                 
                 console.log(response);
+                artObjects = response.objects;
                 var num = response.objects.length;
                 var htmlString = "";
 
@@ -135,13 +138,13 @@ $(document).ready(function() {
 
                 for(var i=0; i<num; i++){
                     if(response.objects[i].images.length>0){
-                        var imgurl = response.objects[i].images[0].sq.url;
-                        var link = response.objects[i].url;
+                        // var imgurl = response.objects[i].images[0].sq.url;
+                        // var link = response.objects[i].url;
 
                         var id = response.objects[i].id;
                         objectIds.push(id);
-                        htmlString = '<a href="'+link+'"><img src="'+imgurl+'"></a>';
-                        $('#results').append( htmlString );
+                        // htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
+                        // $('#results').append( htmlString );
                     }
                 }
                 getColors(objectIds);
@@ -156,14 +159,16 @@ $(document).ready(function() {
     });
 
     function getColors(idList) {
-        var colorNum = 15;
+        ListofColorLists = [];
+        var colorNum = 100;
         for(var i = 0; i < idList.length; i++){
             var currId = idList[i];
+            var colorsList = [];
             $.ajax({ 
                 url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token='+accessToken+'&id='+currId,
                 success: function (response) {
+                    colorsList = [];
                     colors = response.colors;
-                    var colorsList = [];
                     for(var i = 0; i < colors.length; i++){
                         color = colors[i].closest_css3;
                         colorsList.push(color);
@@ -171,6 +176,7 @@ $(document).ready(function() {
                             colorPairs.push(pair);
                         });
                     }
+                    ListofColorLists.push(colorsList);
                 },
                 complete: function () {
                     calculate(colorPairs, centerColor, colorNum);
@@ -182,7 +188,7 @@ $(document).ready(function() {
     function calculate(list, value, colorNum){
         var colorDictionary = {};
         if (list.length > 0 && value.length == 0){
-            value = list[0][0];
+            value = ListofColorLists[0][0];
         }
         for(var i = 0; i < list.length; i++){
             var idx = list[i].indexOf(value);
@@ -200,8 +206,8 @@ $(document).ready(function() {
             }
         }
         normalize(colorDictionary);
-        var colorPairingList = getSortedKeys(colorDictionary).slice(0, colorNum);
-        console.log(colorPairingList);
+        var colorPairingList = getSortedKeys(colorDictionary)
+        // .slice(0, colorNum);
         displayColors(value, colorPairingList, colorDictionary);
     }
 
@@ -237,22 +243,50 @@ $(document).ready(function() {
     function displayColors(selectedColor, list, obj){
         $('#loading').remove();
         var constant = 1000;
+        var selectedArtworks = [];
         if($('#selected').length){
             $('#selected').css("background-color", selectedColor);
         } else {
-            htmlString = 'Selected Color: <div id="selected" class="square" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
+            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto;"></div><br />';
             $('#colorList').before( htmlString );
         }
         
         if($('#colorList').length){
             $('#colorList').empty();
+            $('#results').empty();
         }
 
         for(var i = 0; i < list.length; i++){
-            var size = Math.floor(obj[list[i]]*constant);
-            htmlString = '<div class="square" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
+            var size =  100;
+            //Math.floor(obj[list[i]]*constant);
+            htmlString = '<div class="circle" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
             $('#colorList').append( htmlString );
         }
+
+        for(var i = 0; i < ListofColorLists.length; i++){
+            var colorList = ListofColorLists[i];
+            if(colorList.indexOf(selectedColor) > -1){
+                var currId = objectIds[i];
+                for(j in artObjects){
+                    if(artObjects[j].id == currId){
+                        selectedArtworks.push(artObjects[j]);
+                    }
+                }
+            }
+        }
+
+        for(var i = 0; i < selectedArtworks.length; i++){
+            if(selectedArtworks[i].images.length>0){
+                var imgurl = selectedArtworks[i].images[0].sq.url;
+                var link = selectedArtworks[i].url;
+
+                var id = selectedArtworks[i].id;
+                objectIds.push(id);
+                htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
+                $('#results').append( htmlString );
+            }
+        }
+        
     }
 
     function getHex(colorval) {
