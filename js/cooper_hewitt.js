@@ -186,6 +186,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
                     ListofColorLists.push(colorsList);
                 },
                 complete: function () {
+                    console.log("CALLING CALCULATE");
                     calculate(colorPairs, centerColor, colorNum);
                 }
             });
@@ -299,23 +300,19 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         var constant = 1000;
         var selectedArtworks = [];
         
-        if($('#colorList').length){
-            $('#colorList').empty();
+        if($('#results').length){
             $('#results').empty();
         }
 
         dots = [{"hsl": rgb2hsl(selectedColor), "score": -100}];
 
         for(var i = 0; i < list.length; i++){
-            var size =  100;
-            //Math.floor(obj[list[i]]*constant);
-            htmlString = '<div class="circle" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
-            $('#colorList').append( htmlString );
-
             // update dots. hsl and score normalized to 0-100
             dots.push({"hsl": rgb2hsl(list[i]), "score": obj[list[i]] * 100, "hex": list[i]});
         }
 
+
+        console.log(ListofColorLists.length);
         for(var i = 0; i < ListofColorLists.length; i++){
             var colorList = ListofColorLists[i];
             if(colorList.indexOf(selectedColor) > -1){
@@ -327,7 +324,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
                 }
             }
         }
-
+        console.log(selectedArtworks.length);
         for(var i = 0; i < selectedArtworks.length; i++){
             if(selectedArtworks[i].images.length>0){
                 var imgurl = selectedArtworks[i].images[0].sq.url;
