@@ -5,7 +5,8 @@
   <title>ColorPairingViz</title>
   <!-- Styles -->
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css">
+  <!-- PureCSS -->
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
   <link rel="stylesheet" href="css/style.css">
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
@@ -20,34 +21,42 @@
 <body>
   <div id="top">
     <h1 id="topTitle">
-      Cooper Hewitt Collection &gt; Color Pairing
+      Cooper Hewitt Collection &gt; Color Pairings
     </h1>
   </div>
+  <div id="explanation">
+    <p>
+      This is a visualization of how often colors are paired in artworks within Cooper Hewitt's collection of almost 200,000 objects.
+    </p>
+    <p>
+      The color in the center is the base color each other color is compared to. Other colors are arranged around the base color by hue, like a color wheel. Colors that are larger/closer to the center are found often in the same artwork with the base color. Colors that are smaller/farther from the center are not found as often in the same artwork with the base color.
+    </p>
+    <p>
+      You can click on an orbiting color to make that color the base color in the center. Below the visualization are images of objects within your query that contain the base color. Click on an image to visit the object's page at Cooper Hewitt's website.
+    </p>
+    <button type="button" id="hide" class="pure-button">Hide explanation</button>
+  </div>
   <div id="formFrame">
-    <form id="queryForm">
-      <h2>Query</h2>
-      <label for="query">Please enter a query</label><br />
-      <input type="search" id="query" name="query"/>
-      <h2>Country</h2>
-      <label for="country">Please enter a country</label><br />
-      <input type="search" id="country" name="country"/>
-      <h2>Period</h2>
-      <label for="period">Please enter a period</label><br />
-      <input type="search" id="period" name="period"/>
-      <h2>Medium</h2>
-      <label for="medium">Please enter a medium</label><br />
-      <input type="search" id="medium" name="medium"/>
-      <h2>Year range</h2>
-      <label id="amount">1900 - 2016</label>
-      <div id="slider-range"></div>
-      <button type="submit" id="cooper">Submit</button>
+    <form id="queryForm" class="pure-form">
+      <fieldset>
+        <legend>Fill in a query or two and press Submit</legend>
+        <input id="query" type="search" placeholder="Subject">
+        <input id="country" type="search" placeholder="Country">
+        <input id="period" type="search" placeholder="Period">
+        <input id="medium" type="search" placeholder="Medium">
+        <div id="slider">
+          <p>Year range: <span id="amount">1900&ndash;2016</span></p>
+          <div id="slider-range"></div>
+        </div>
+        <button type="submit" id="cooper" class="pure-button">Submit</button>
+      </fieldset>
+    </form>
+  </div>
 
-    </form></div>
-
-    <div id="viz"></div>
-    <div id="colorList"></div>
-    <div id="results"></div>
-  </body>
-  <script src="/js/cooper_hewitt.js"></script>
-  <script language="javascript" type="text/javascript" src="js/sketch.js"></script>
-  </html>
+  <div id="viz"></div>
+  <div id="colorList"></div>
+  <div id="results"></div>
+</body>
+<script src="/js/cooper_hewitt.js"></script>
+<script language="javascript" type="text/javascript" src="js/sketch.js"></script>
+</html>

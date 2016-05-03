@@ -57,7 +57,6 @@
 
 body {
   background-color:#F2F2F2;
-  min-width: 1400px;
   font-family:"Cooper Hewitt Book";
 }
 
@@ -81,8 +80,8 @@ input {
 }
 
 img {
-  width: 100px;
-  height: 100px;
+  width: 10%;
+  height: 10%;
 }
 
 /* Stylesheet for Better Autocomplete jQuery plugin by Didrik Nordström */
@@ -182,17 +181,18 @@ img {
 
 #slider-range {
   width: 300px;
+  margin-left: 10px;
   margin-bottom: 20px;
 }
 
-.circle {
+/*.circle {
   cursor: pointer;
   display: inline-block;
   margin: 20px;
   background-color: #fff;
   width: 50px;
   border-radius: 100%;
-}
+}*/
 
 /*Qing made changes below */
 #top {
@@ -210,38 +210,48 @@ img {
   font-weight: 700;
 }
 
-#cooper {
-  padding:5px 15px;
+#cooper, #hide {
+  padding:5px 15px 3px;
   color:#fff;
   font-weight:700;
-  background-color:#999;
+  background-color:#777;
   border:none;
   cursor:pointer;
-  -webkit-border-radius:10px;
-  -moz-border-radius: 10px;
-  border-radius:10px;
+  -webkit-border-radius:5px;
+  -moz-border-radius: 5px;
+  border-radius:5px;
+}
+
+#cooper:hover, #hide:hover {
+  background-color: #444;
 }
 
 #formFrame {
-  margin-top: 10px;
-	width:30%;
-	float:left;
-	height:100%;
+	width:100%;
 }
 
 #viz {
-    float: right;
-	width:65%;
-	min-height:500px;
-	margin-left:20px;
+	margin: 0 auto;
+}
+
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 1000px;
 }
 
 #results {
-  width: 60%;
+  width: 100%;
   margin: 0 auto;
-  padding: 20px;
 }
 
 #colorList {
   display: none;
+}
+
+#explanation {
+  padding: 0 20px;
 }
