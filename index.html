@@ -6,46 +6,48 @@
   <!-- Styles -->
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <!-- Boostrap JS -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <!-- D3 -->
-  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <!-- Better Autocomplete -->
-  <script src="/js/jquery.better-autocomplete.js"></script>
+  <script src="js/jquery.better-autocomplete.js"></script>
   <!-- P5 -->
   <script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
 </head>
 <body>
-<div id="top"><p id="topTitle"><b>COOPERHEWITT COLLECTION  >  COLOR PAIRNG</b></p></div>
- <div id="formFrame">
-  <form id="queryForm">
-    <h2>Query</h2>
-    <label for="query">Please enter a query</label><br />
-    <input type="search" id="query" name="query"/>
-    <h2>Country</h2>
-    <label for="country">Please enter a country</label><br />
-    <input type="search" id="country" name="country"/>
-    <h2>Period</h2>
-    <label for="period">Please enter a period</label><br />
-    <input type="search" id="period" name="period"/>
-    <h2>Medium</h2>
-    <label for="medium">Please enter a medium</label><br />
-    <input type="search" id="medium" name="medium"/>
-    <h2>Year range</h2>
-    <label id="amount">1900 - 2016</label>
-    <div id="slider-range"></div>
-    <button type="submit" id="cooper">Submit</button>
+  <div id="top">
+    <h1 id="topTitle">
+      Cooper Hewitt Collection &gt; Color Pairing
+    </h1>
+  </div>
+  <div id="formFrame">
+    <form id="queryForm">
+      <h2>Query</h2>
+      <label for="query">Please enter a query</label><br />
+      <input type="search" id="query" name="query"/>
+      <h2>Country</h2>
+      <label for="country">Please enter a country</label><br />
+      <input type="search" id="country" name="country"/>
+      <h2>Period</h2>
+      <label for="period">Please enter a period</label><br />
+      <input type="search" id="period" name="period"/>
+      <h2>Medium</h2>
+      <label for="medium">Please enter a medium</label><br />
+      <input type="search" id="medium" name="medium"/>
+      <h2>Year range</h2>
+      <label id="amount">1900 - 2016</label>
+      <div id="slider-range"></div>
+      <button type="submit" id="cooper">Submit</button>
 
-  </form></div>
+    </form></div>
 
-  <div id="viz"></div>
-  <div id="colorList"></div>
-  <div id="results"></div>
-</body>
-<script src="/js/cooper_hewitt.js"></script>
-<script language="javascript" type="text/javascript" src="js/sketch.js"></script>
-</html>
+    <div id="viz"></div>
+    <div id="colorList"></div>
+    <div id="results"></div>
+  </body>
+  <script src="/js/cooper_hewitt.js"></script>
+  <script language="javascript" type="text/javascript" src="js/sketch.js"></script>
+  </html>
