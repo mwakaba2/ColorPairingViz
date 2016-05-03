@@ -40,29 +40,29 @@ var countries = [
 
 var medium = ['graphite on tracing paper', 'block-printed', 'graphite\nsupport: tracing paper',
                 'silk embroidery on linen foundation', 'pen and brown ink, brush and brown wash, graphite',
-                'Tin-glazed earthenware, underglaze', 'etching on off-white laid paper', 'paper', 
-                'block-printed on handmade paper', 'red chalk on paper', 'offset lithography', 'plastic', 
-                'earthenware', 'cotton', 'graphite on thin cream paper', 
+                'Tin-glazed earthenware, underglaze', 'etching on off-white laid paper', 'paper',
+                'block-printed on handmade paper', 'red chalk on paper', 'offset lithography', 'plastic',
+                'earthenware', 'cotton', 'graphite on thin cream paper',
                 'graphite; ruled border in graphite\nsupport: tracing paper', 'machine-printed, mica, liquid',
-                'velvet', 'etching', 'lithograph on paper', 'graphite on tracing paper, ruled border in graphite', 
-                'glass slide', 'stainless steel', 'gouache on paper', 'glazed porcelain', 'block-printed on paper', 
-                'screen printed', 'wood', 'bronze', 'machine-printed on paper', 'silk, metallic thread', 'wool', 
+                'velvet', 'etching', 'lithograph on paper', 'graphite on tracing paper, ruled border in graphite',
+                'glass slide', 'stainless steel', 'gouache on paper', 'glazed porcelain', 'block-printed on paper',
+                'screen printed', 'wood', 'bronze', 'machine-printed on paper', 'silk, metallic thread', 'wool',
                 'wood, carved', 'engraving on white laid paper', 'ivory', 'porcelain', 'graphite on cream tracing paper',
                 'glass', 'pen and brown ink, brush and brown wash', 'graphite, ruled border in graphite\nsupport: tracing paper',
-                'graphite on paper', 'screen printed on paper', 'brass', 'silk', 'silver', 'offset lithograph on paper', 
+                'graphite on paper', 'screen printed on paper', 'brass', 'silk', 'silver', 'offset lithograph on paper',
                 'silk, metallic', 'machine-printed', 'stoneware', 'glazed earthenware', 'metal',
                 'tin-glazed earthenware, underglaze', 'etching and engraving on off-white laid paper',
                 'linen', 'lithograph', 'graphite', 'brush and gouache on paper', 'offset lithograph on white wove paper',
                 'other', 'printed']
 
 period_dict = {'Rococo': 35417101, 'Hudson River School': 35417175, 'Neoclassical': 35417089,
-                'American Modern': 35435409, 'early Modern': 35417049, 'Art Deco': 35417235, 
-                'postwar': 35435429, ' Civil War': 35417141, 
-                'Northern Renaissance': 35417075, 'Mid-20th century': 35417329, 
+                'American Modern': 35435409, 'early Modern': 35417049, 'Art Deco': 35417235,
+                'postwar': 35435429, ' Civil War': 35417141,
+                'Northern Renaissance': 35417075, 'Mid-20th century': 35417329,
                 'Late Nineteenth Century': 35417087, '  Late Twentieth Century': 35435423,
                 'Early 20th century': 35417121}
 
-periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "early Modern",          
+periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "early Modern",
         "Art Deco", "Baroque", "postwar", " Civil War", "Northern Renaissance", "Mid-20th century",
          "Late Nineteenth Century", "  Late Twentieth Century", "Early 20th century"]
 
@@ -93,12 +93,16 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         calculate(colorPairs, selectedColor, 15);
     });
 
+    $("#hide").click(function(event){
+      $("#explanation").fadeOut();
+    });
+
     $("#cooper").click(function(event){
         event.preventDefault();
         var queryString = '';
         if(sliderRange[0] == 1900 || sliderRange[1] == 2016){
             if(sliderRange[0] != 1900 || sliderRange[1] != 2016){
-                var yearRange = '&year_start='+sliderRange[0]+'-'+sliderRange[1];
+                var yearRange = '&year_start='+sliderRange[0]+'&ndash;'+sliderRange[1];
                 queryString += yearRange;
             }
         }
@@ -124,7 +128,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
             $.ajax({
                 url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token='+accessToken+queryString+'&page=1&per_page=100',
                 success: function (response) {
-                    
+
                     console.log(response);
                     artObjects = response.objects;
                     var num = response.objects.length;
@@ -160,8 +164,8 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         } else {
             $('#results').text('You forgot to search for anything!');
         }
- 
-        
+
+
 
     });
 
@@ -171,7 +175,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         for(var i = 0; i < idList.length; i++){
             var currId = idList[i];
             var colorsList = [];
-            $.ajax({ 
+            $.ajax({
                 url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.objects.getColors&access_token='+accessToken+'&id='+currId,
                 success: function (response) {
                     colorsList = [];
@@ -299,7 +303,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         $('#loading').remove();
         var constant = 1000;
         var selectedArtworks = [];
-        
+
         if($('#results').length){
             $('#results').empty();
         }
@@ -336,7 +340,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
                 $('#results').append( htmlString );
             }
         }
-        
+
     }
 
     function getHex(colorval) {
