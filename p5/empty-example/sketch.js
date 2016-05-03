@@ -74,6 +74,8 @@ function setup() {
   borderColor = 255;
   borderHoverColor = 0;
 
+  core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
+
   // Initialize all values
   // r = height * 0.45;
   // theta = 0;
@@ -81,7 +83,7 @@ function setup() {
 
 function draw() {
   clickable = false;
-  core = dots[0].hsl; // @TODO: INITIALIZE THIS TO THE APPROPRIATE COLOR
+
   background(240);
 
   colorMode(HSL);
