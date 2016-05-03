@@ -75,7 +75,6 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         values: [ 1900, 2016 ],
         slide: function( event, ui ) {
             $( "#amount" ).html( ui.values[ 0 ] + "–" + ui.values[ 1 ]);
-
             sliderRange[0] = ui.values[0];
             sliderRange[1] = ui.values[1];
         }
@@ -95,12 +94,14 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
     });
 
     $("#cooper").click(function(event){
-        $('#results').before('<div id="loading">Loading...</div>');
         event.preventDefault();
         var queryString = '';
-        var yearRange = '&year_start='+sliderRange[0]+'-'+sliderRange[1];
-        queryString += yearRange;
-
+        if(sliderRange[0] == 1900 || sliderRange[1] == 2016){
+            if(sliderRange[0] != 1900 || sliderRange[1] != 2016){
+                var yearRange = '&year_start='+sliderRange[0]+'-'+sliderRange[1];
+                queryString += yearRange;
+            }
+        }
         if($('#query').val().length != 0) {
             var keywords = '&query='+$('#query').val();
             queryString += keywords;
@@ -110,7 +111,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
             queryString += country;
         }
         if($('#period').val().length != 0) {
-            var period = '&period='+$('#period').val();
+            var period = '&period_id='+period_dict[$('#period').val()];
             queryString += period;
         }
         if($('#medium').val().length != 0) {
@@ -118,43 +119,49 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
             queryString += medium;
         }
 
-        var objectNum = 150;
-        $.ajax({
-            url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token='+accessToken+queryString+'&has_images=true&page=1&per_page='+objectNum,
-            success: function (response) {
-                
-                console.log(response);
-                artObjects = response.objects;
-                var num = response.objects.length;
-                var htmlString = "";
+        if(queryString.length > 0){
+            $('#results').before('<div id="loading">Loading...</div>');
+            $.ajax({
+                url: 'https://api.collection.cooperhewitt.org/rest/?method=cooperhewitt.exhibitions.getObjects&access_token='+accessToken+queryString+'&page=1&per_page=100',
+                success: function (response) {
+                    
+                    console.log(response);
+                    artObjects = response.objects;
+                    var num = response.objects.length;
+                    var htmlString = "";
 
-                $( '#results' ).empty();
+                    $( '#results' ).empty();
 
-                if(num == 0){
+                    if(num == 0){
+                        $('#loading').remove();
+                        $( '#results' ).empty();
+                        $('#results').text('No results!');
+                    }
+
+                    for(var i=0; i<num; i++){
+                        if(response.objects[i].images.length>0){
+                            var imgurl = response.objects[i].images[0].sq.url;
+                            var link = response.objects[i].url;
+
+                            var id = response.objects[i].id;
+                            objectIds.push(id);
+                            htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
+                            $('#results').append( htmlString );
+                        }
+                    }
+                    getColors(objectIds);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
                     $('#loading').remove();
                     $( '#results' ).empty();
                     $('#results').text('No results!');
                 }
-
-                for(var i=0; i<num; i++){
-                    if(response.objects[i].images.length>0){
-                        // var imgurl = response.objects[i].images[0].sq.url;
-                        // var link = response.objects[i].url;
-
-                        var id = response.objects[i].id;
-                        objectIds.push(id);
-                        // htmlString = '<a target="_blank" href="'+link+'"><img src="'+imgurl+'"></a>';
-                        // $('#results').append( htmlString );
-                    }
-                }
-                getColors(objectIds);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#loading').remove();
-                $( '#results' ).empty();
-                $('#results').text('No results!');
-            }
-        });
+            });
+        } else {
+            $('#results').text('You forgot to search for anything!');
+        }
+ 
+        
 
     });
 
@@ -179,6 +186,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
                     ListofColorLists.push(colorsList);
                 },
                 complete: function () {
+                    console.log("CALLING CALCULATE");
                     calculate(colorPairs, centerColor, colorNum);
                 }
             });
@@ -291,30 +299,20 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
         $('#loading').remove();
         var constant = 1000;
         var selectedArtworks = [];
-        if($('#selected').length){
-            $('#selected').css("background-color", selectedColor);
-        } else {
-            htmlString = 'Selected Color: <div id="selected" class="circle" style="background-color:'+selectedColor+'; width: 300px; height: 300px; margin: 0 auto; margin-top: 60px;"></div><br />';
-            //$('#colorList').before( htmlString );
-        }
         
-        if($('#colorList').length){
-            $('#colorList').empty();
+        if($('#results').length){
             $('#results').empty();
         }
 
         dots = [{"hsl": rgb2hsl(selectedColor), "score": -100}];
 
         for(var i = 0; i < list.length; i++){
-            var size =  100;
-            //Math.floor(obj[list[i]]*constant);
-            htmlString = '<div class="circle" style="background-color:'+list[i]+'; width:'+ size +'px; height:' + size + 'px;"></div>';
-            $('#colorList').append( htmlString );
-
             // update dots. hsl and score normalized to 0-100
             dots.push({"hsl": rgb2hsl(list[i]), "score": obj[list[i]] * 100, "hex": list[i]});
         }
 
+
+        console.log(ListofColorLists.length);
         for(var i = 0; i < ListofColorLists.length; i++){
             var colorList = ListofColorLists[i];
             if(colorList.indexOf(selectedColor) > -1){
@@ -326,7 +324,7 @@ periods = ["Rococo", "Hudson River School", "Neoclassical", "American Modern", "
                 }
             }
         }
-
+        console.log(selectedArtworks.length);
         for(var i = 0; i < selectedArtworks.length; i++){
             if(selectedArtworks[i].images.length>0){
                 var imgurl = selectedArtworks[i].images[0].sq.url;
